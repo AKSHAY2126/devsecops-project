@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: SonarCloud Analysis
 
 on:
   push:
@@ -28,13 +28,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-
-    - name: Run SonarCloud Scan
+    - name: Build with Maven & Run SonarCloud Scan
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
         -Dsonar.projectKey=AKSHAY2126_devsecops-project \
         -Dsonar.organization=akshay2126 \
         -Dsonar.host.url=https://sonarcloud.io \
         -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-
