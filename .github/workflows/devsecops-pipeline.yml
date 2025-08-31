@@ -24,15 +24,15 @@ jobs:
         pip install -e .  # This installs your package in development mode
         pip install pytest pytest-cov bandit safety
 
-    - name: Run Bandit security scan
-      run: |
-        pip install bandit
-        bandit -r src/ -f json -o bandit-report.json || true
+        - name: Run Bandit security scan
+        run: |
+            pip install bandit
+            bandit -r src/ -f json -o bandit-report.json || true
 
-    - name: Run Safety check
-      run: |
-        pip install safety
-        safety check --json > safety-report.json || true
+        - name: Run Safety check
+        run: |
+            pip install safety
+            safety check --json > safety-report.json || true
 
   quality-scan:
     runs-on: ubuntu-latest
@@ -54,7 +54,8 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        pytest --junitxml=test-results.xml --cov=src --cov-report=xml:coverage.xml tests/
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+        python -m pytest tests/ --cov=src --cov-report=xml:coverage.xml --junitxml=test-results.xml -v
 
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v1
@@ -63,6 +64,7 @@ jobs:
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       with:
         args: >
+          -Dsonar.scanner.downloadUrl=https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006.zip
           -Dsonar.python.bandit.reportPaths=bandit-report.json
           -Dsonar.python.xunit.reportPath=test-results.xml
           -Dsonar.python.coverage.reportPaths=coverage.xml
