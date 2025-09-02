@@ -29,7 +29,7 @@ public class App {
         System.out.println("Welcome " + name);
 
         // Code smell: Hardcoded credentials (security hotspot)
-        // String password = "Admin@123";
+        String password = "Admin@123";
 
         // Bug: Possible division by zero
         int x = 10;
